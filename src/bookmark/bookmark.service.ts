@@ -28,14 +28,13 @@ export class BookmarkService {
       where: { id: userID },
       include: { bookmarks: true },
     });
+    var bookmark = author.bookmarks.filter(function (e) {
+      return e.id === bookmarkId;
+    });
 
-    var bookmark = author.bookmarks.filter((v) => v.id == bookmarkId);
     if (bookmark !== undefined && bookmark.length != 0) return bookmark;
     else
-      return new NotFoundException({
-        "statusCode": 404,
-		"message": "Bookmark not found on your list",
-      });
+      return new NotFoundException();
   }
 
   async createBookmark(userId: number, dto: CreateBookmarkDTO) {
