@@ -1,8 +1,14 @@
 import { PrismaService } from 'src/prisma/prisma.service';
 import { hashString } from 'src/shared/helper';
 
-import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import {
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
+import {
+  Prisma,
+  Role,
+} from '@prisma/client';
 
 import { CreateUserDTO } from './dto/create-user-dto';
 
@@ -16,27 +22,37 @@ export class UserService {
   }
 
   async getUserByEmail(email: string): Promise<object> {
-    var user = await this.prismaService.user.findUnique({
-      where: {
-        email: email,
-      },
-    });
-    delete user.hash;
-    return user;
+    try {
+      var user = await this.prismaService.user.findUnique({
+        where: {
+          email: email,
+        },
+      });
+      delete user.hash;
+      return user;
+    } catch (error) {
+      throw null;
+    }
   }
 
-  async createUser(dto: CreateUserDTO): Promise<object> {
-    var hashedP = await hashString(dto.hash);
+  async createUser(userRole: Role, dto: CreateUserDTO): Promise<object> {
+    if (userRole === Role.ADMIN) {
+      var hashedP = await hashString(dto.hash);
     var newUser = await this.prismaService.user.create({
       data: {
         email: dto.email,
         hash: hashedP,
+        role: dto.role,
+        phonenumber: dto.phoneNumber,
         firstName: dto.firstName,
         lastName: dto.lastName,
       },
     });
     delete newUser.hash;
     return newUser;
+    } else {
+      return new ForbiddenException("You don't permission to create user.")
+    }
   }
 
   async editUser(params: {

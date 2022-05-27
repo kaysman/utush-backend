@@ -1,11 +1,16 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
-import { PrismaService } from "src/prisma/prisma.service";
-import { hashString } from "src/shared/helper";
-import { CreateUserDTO } from "src/user/dto/create-user-dto";
-import { LoginTO } from "src/user/dto/login.dto";
 import * as argon from 'argon2';
-import { JwtService } from "@nestjs/jwt";
-import { JwtPayload } from "./jwt/jwt-payload.dto";
+import { PrismaService } from 'src/prisma/prisma.service';
+import { hashString } from 'src/shared/helper';
+import { CreateUserDTO } from 'src/user/dto/create-user-dto';
+import { LoginTO } from 'src/user/dto/login.dto';
+
+import {
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+
+import { JwtPayload } from './jwt/jwt-payload.dto';
 
 @Injectable({})
 export class AuthService {
@@ -23,8 +28,12 @@ export class AuthService {
                 var hashedPassword = await hashString(createUserDTO.hash);
                 var newUser = await this.prisma.user.create({
                     data: {
-                        "email": createUserDTO.email,
-                        "hash": hashedPassword,
+                        email: createUserDTO.email,
+                        hash: hashedPassword,
+                        role: createUserDTO.role,
+                        firstName: createUserDTO.firstName,
+                        lastName: createUserDTO.lastName,
+                        phonenumber: createUserDTO.phoneNumber,
                     }
                 });
 

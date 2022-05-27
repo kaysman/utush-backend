@@ -26,8 +26,8 @@ export class UserController {
     }
 
     @Post('create')
-    async createUser(@Body() createUserDto: CreateUserDTO) : Promise<object> {
-        return await this.userService.createUser(createUserDto);
+    async createUser(@Request() req, @Body() createUserDto: CreateUserDTO) : Promise<object> {
+        return await this.userService.createUser(req.user.role, createUserDto);
     }
 
     // this function allows user to update any user on a table.

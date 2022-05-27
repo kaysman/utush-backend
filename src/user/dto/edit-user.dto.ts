@@ -24,4 +24,8 @@ export class EditUserDTO {
     @IsString()
     @IsOptional()
     lastName? : string;
+
+    @IsString()
+    @IsOptional()
+    phoneNumber? : string
 }

@@ -10,33 +10,108 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id Int @id @default(autoincrement())
-  email String @unique
-  hash String
-  firstName String?
-  lastName String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  bookmarks Bookmark []
-  @@map("users")
+enum Role {
+  ADMIN
+  BUSINESS_USER
+  END_USER
 }
 
-model Bookmark {
-  
-  userId Int
-  id Int @id @default(autoincrement())
+enum LotteryType {
+  UTUSH_GOZLE
+  AKSIYA
+}
 
-  title String
-  link String
-  description String?
+enum LotteryStatus {
+  ACTIVE
+  INACTIVE
+  RUNNING_LOW
+}
+
+enum PrizeType {
+  LUX
+  MEDIUM
+  REGULAR
+}
+
+model User {
+  id          Int      @id @default(autoincrement())
+  email       String   @unique
+  hash        String
+  role        Role
+  firstName   String?
+  lastName    String?
+  phonenumber String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  favourites Favourite[]
+  lotteries  Lottery[]
+
+}
+
+model Lottery {
+  id          Int           @id @default(autoincrement())
+  name        String
+  bannerImage String
+  description String
+  type        LotteryType
+  status      LotteryStatus? @default(INACTIVE)
+  from        DateTime?
+  to          DateTime?
+
+  favourite Favourite?
+
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id])    
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
   
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
 
-  @@map("bookmarks")
+model UtushGozle {
+  id        Int     @id @default(autoincrement())
+  coinTotalCount Int
+  coinSpecialCount Int
+  coins     Coin[]
+
+  lotteryId Int @unique
+}
+
+model Aksiya {
+  id        Int     @id @default(autoincrement())
+  lotteryId Int     @unique
+}
+
+model Coin {
+  id               Int      @id @default(autoincrement())
+  randomizedNumber Int
+  hasPrize         Boolean
+  prizeType        PrizeType?
+  isUsed           Boolean 
+  text             String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  utushGozleId Int
+  utushGozle   UtushGozle @relation(fields: [utushGozleId], references: [id])
+}
+
+model Favourite {
+  id Int @id @default(autoincrement())
+
+  // user data
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  // lottery data
+  lotteryId Int     @unique
+  lottery   Lottery @relation(fields: [lotteryId], references: [id])
+}
+
+model Prize {
+  id Int @id @default(autoincrement())
+  prizeCount Int
+  prizeName String
+  prizeType PrizeType @default(REGULAR)
 }
