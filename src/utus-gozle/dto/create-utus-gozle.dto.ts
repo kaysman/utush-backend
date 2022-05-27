@@ -8,6 +8,21 @@ import {
 
 import { PrizeType } from '@prisma/client';
 
+export class PrizeDTO {
+  @IsNumber()
+  @IsNotEmpty()
+  @Type(() => Number)
+  prizeCount: number;
+
+  @IsString()
+  @IsNotEmpty()
+  prizeName: string;
+
+  @IsEnum(PrizeType)
+  @IsNotEmpty()
+  prizeType: PrizeType;
+}
+
 export class CreateUtusGozleDTO {
   @IsNumber()
   @Type(() => Number)
@@ -24,22 +39,8 @@ export class CreateUtusGozleDTO {
   @IsNotEmpty()
   lotteryId: number;
 
-  @Type(() => PrizeDTO)
+  @IsString()
   @IsNotEmpty()
   prizes: PrizeDTO[];
 }
 
-export class PrizeDTO {
-  @IsNumber()
-  @IsNotEmpty()
-  @Type(() => Number)
-  prizeCount: number;
-
-  @IsString()
-  @IsNotEmpty()
-  prizeName: string;
-
-  @IsEnum(PrizeType)
-  @IsNotEmpty()
-  prizeType: PrizeType;
-}

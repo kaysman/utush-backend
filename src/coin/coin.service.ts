@@ -8,12 +8,9 @@ import { CreateCoinDTO } from './dto';
 export class CoinService {
     constructor(private prisma: PrismaService) {}
 
-    async createSingleCoin( ) {
-        // var newCoin = await this.prisma.coin.create({data: dto});
-        // return newCoin;
-        const rndInt = generateString(7); 
-        console.log(rndInt);
-        
+    async createSingleCoin(createCoinDto : CreateCoinDTO) {
+        var newCoin = await this.prisma.coin.create({data: createCoinDto});
+        return newCoin;
     }
 
 
@@ -30,18 +27,3 @@ export class CoinService {
 
 
 }
-
-// declare all characters
-const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-function generateString(length) {
-    let result = ' ';
-    const charactersLength = characters.length;
-    for ( let i = 0; i < length; i++ ) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-
-    return result;
-}
-
-console.log(generateString(5));

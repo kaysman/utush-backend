@@ -1,21 +1,30 @@
 import { Type } from 'class-transformer';
 import {
   IsBoolean,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
 } from 'class-validator';
 
+import { PrizeType } from '@prisma/client';
+
 export class CreateCoinDTO {
 
-    @IsNumber()
-    @Type(() => Number)
+    
+
+    @IsString()
     @IsNotEmpty()
-    count: number
+    randomizedNumber: string;
     
     @IsNotEmpty()
     @IsBoolean()
-    isSpecial: boolean
+    hasPrize: boolean
+
+    @IsEnum(PrizeType)
+    @IsOptional()
+    prizeType? : PrizeType
     
     @IsNotEmpty()
     @IsBoolean()
@@ -29,5 +38,4 @@ export class CreateCoinDTO {
     @Type(() => Number)
     @IsNotEmpty()
     utushGozleId: number
-
 }
