@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
+enum RoleType {
   ADMIN
   BUSINESS_USER
   END_USER
@@ -37,20 +37,48 @@ model User {
   id          Int      @id @default(autoincrement())
   email       String   @unique
   hash        String
-  role        Role
   firstName   String?
   lastName    String?
   phonenumber String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  favourites Favourite[]
-  lotteries  Lottery[]
+  roleId Int
+  role   Role @relation(fields: [roleId], references: [id])
+
+  Lottery Lottery[]
+}
+
+model Role {
+  id        Int      @id @default(autoincrement())
+  name      RoleType @default(END_USER)
+  users     User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Permission {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
 }
 
+model Role_Permissions {
+  id           Int @id @default(autoincrement())
+  permissionId Int
+  roleId       Int
+}
+
+model User_Favourites {
+  id        Int @id @default(autoincrement())
+  userId    Int
+  lotteryId Int
+}
+
 model Lottery {
-  id          Int           @id @default(autoincrement())
+  id          Int            @id @default(autoincrement())
   name        String
   bannerImage String
   description String
@@ -58,60 +86,45 @@ model Lottery {
   status      LotteryStatus? @default(INACTIVE)
   from        DateTime?
   to          DateTime?
-
-  favourite Favourite?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 
   authorId Int
-  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)    
+  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-}
 
-model UtushGozle {
-  id        Int     @id @default(autoincrement())
-  coinTotalCount Int
+  ////////////////////////UtushGozle/////////////////////////////////////////////////////
+  coinTotalCount   Int
   coinSpecialCount Int
-  coins     Coin[]
+  ////////////////////////UtushGozle/////////////////////////////////////////////////////
 
-  lotteryId Int @unique
-}
-
-model Aksiya {
-  id        Int     @id @default(autoincrement())
-  lotteryId Int     @unique
 }
 
 model Coin {
   id               Int      @id @default(autoincrement())
   randomizedNumber String
   hasPrize         Boolean
-  prizeType        PrizeType?
-  isUsed           Boolean 
+  isUsed           Boolean
   text             String
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-
-  utushGozleId Int
-  utushGozle   UtushGozle @relation(fields: [utushGozleId], references: [id], onDelete: Cascade)
-}
-
-model Favourite {
-  id Int @id @default(autoincrement())
-
-  // user data
-  userId Int
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // lottery data
-  lotteryId Int     @unique
-  lottery   Lottery @relation(fields: [lotteryId], references: [id], onDelete: Cascade)
 }
 
 model Prize {
-  id Int @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   prizeCount Int
-  prizeName String
-  prizeType PrizeType @default(REGULAR)
+  prizeName  String
+  prizeType  PrizeType @default(REGULAR)
+}
+
+model Prize_Coins {
+  id      Int @id @default(autoincrement())
+  prizeId Int
+  coinId  Int
+}
+
+model Lottery_Coins {
+  id        Int @id @default(autoincrement())
+  lotteryId Int
+  coinId    Int
 }

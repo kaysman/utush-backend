@@ -1,3 +1,4 @@
+import { ApiResponse } from 'src/shared/dto/api_response.dto';
 import { CreateUserDTO } from 'src/user/dto/create-user-dto';
 import { LoginTO } from 'src/user/dto/login.dto';
 
@@ -14,12 +15,35 @@ export class AuthController {
     constructor(private authService: AuthService){}
 
     @Post('signup')
-    signup(@Body() signupDTO: CreateUserDTO) {
-        return this.authService.signup(signupDTO);
+    async signup(@Body() signupDTO: CreateUserDTO) {
+        var apiResponse = new ApiResponse()
+        try {
+            var res = await this.authService.signup(signupDTO);
+            apiResponse.responseCode = 200
+            apiResponse.data = res
+            apiResponse.message = ''
+        } catch (error) {
+            apiResponse.responseCode = error.responseCode
+            apiResponse.message = error.toString()
+        } finally{
+            return apiResponse
+        }
+        
     }
 
     @Post('signin')
-    signin(@Body() loginDto: LoginTO) {
-        return this.authService.signin(loginDto);
+    async signin(@Body() loginDto: LoginTO) {
+        var apiResponse = new ApiResponse()
+        try {
+            var res = this.authService.signin(loginDto);
+            apiResponse.responseCode = 200
+            apiResponse.data = res
+            apiResponse.message = ''
+        } catch (error) {
+            apiResponse.responseCode = error.responseCode
+            apiResponse.message = error.toString()
+        } finally{
+            return apiResponse
+        }
     }
 }

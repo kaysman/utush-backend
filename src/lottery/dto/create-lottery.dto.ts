@@ -1,9 +1,12 @@
+import { Type } from 'class-transformer';
 import {
   IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
+import { PrizeDTO } from 'src/utus-gozle/dto/create-utus-gozle.dto';
 
 import {
   LotteryStatus,
@@ -36,4 +39,19 @@ export class CreateLotteryDTO {
 
   @IsOptional()
   to?: Date;
+
+  ////////////////////////////utushGozle////////////
+  @IsNumber()
+  @Type(() => Number)
+  @IsOptional()
+  coinTotalCount?: number;
+
+  @IsNumber()
+  @Type(() => Number)
+  @IsOptional()
+  coinSpecialCount?: number;
+
+  @IsString()
+  @IsOptional()
+  prizes?: PrizeDTO[];
 }

@@ -37,5 +37,5 @@ export class CreateCoinDTO {
     @IsNumber()
     @Type(() => Number)
     @IsNotEmpty()
-    utushGozleId: number
+    lotteryId: number
 }

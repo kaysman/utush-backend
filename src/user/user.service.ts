@@ -48,6 +48,8 @@ export class UserService {
         lastName: dto.lastName,
       },
     });
+
+        
     delete newUser.hash;
     return newUser;
     } else {

@@ -1,18 +1,26 @@
 import * as argon from 'argon2';
+import { PermissionEnum } from 'src/auth/enums/permission.enum';
 
-export async function hashString (unHashedPassword : string) : Promise<string> {
-    return await argon.hash(unHashedPassword);
+export const adminPermissions: PermissionEnum[] = Object.values(PermissionEnum);
+export const businessPermissions: PermissionEnum[] =
+  Object.values(PermissionEnum);
+export const endUserPermissions: PermissionEnum[] =
+  Object.values(PermissionEnum);
+
+export async function hashString(unHashedPassword: string): Promise<string> {
+  return await argon.hash(unHashedPassword);
 }
 
 // declare all characters
-const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const characters =
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 export function generateString(length) {
-    let result = '';
-    const charactersLength = characters.length;
-    for ( let i = 0; i < length; i++ ) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
+  let result = '';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
 
-    return result;
+  return result;
 }
